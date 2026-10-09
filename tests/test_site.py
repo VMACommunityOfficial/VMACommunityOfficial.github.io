@@ -286,6 +286,18 @@ class WholeSiteTests(unittest.TestCase):
             self.assertIn('src="js/main.js"', html, filename)
             self.assertIn('href="images/LOGO3.png"', html, filename)
 
+    def test_header_uses_logo_image_instead_of_letter_placeholder(self):
+        for filename in self.html_files:
+            html = read_required(filename)
+            header = re.search(r'<header class="site-header">(.*?)</header>', html, re.S)
+            self.assertIsNotNone(header, filename)
+            self.assertIn(
+                '<img class="brand-logo" src="images/LOGO3.png"',
+                header.group(1),
+                filename,
+            )
+            self.assertNotIn('<span class="brand-mark">V</span>', header.group(1), filename)
+
     def test_every_page_has_unique_required_seo(self):
         titles, descriptions, canonicals, og_urls = set(), set(), set(), set()
         for filename in self.html_files:
